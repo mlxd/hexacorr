@@ -1,5 +1,5 @@
-function [g6B,bin] = binData(g6C,bins)
-bin = linspace(0,max(g6C(1,:)),bins);
+function [g6B,bin] = binData(g6C,binMax,bins)
+bin = linspace(0,binMax,bins);
 g6B = zeros(length(bin)-1,1);
 for kk=1:(length(bin)-1)
     idx = find( g6C(1,:) >= bin(kk) & g6C(1,:) < bin(kk+1) );

@@ -1,4 +1,6 @@
 function [S] = uniqPairIdx_precalc(R,psi6p)
+    %Generates unique pairs from the pre-computed psi6 orientational order
+    %parameter, for use in calculating correlation functions
     count = 0;
     for ii=1:(size(R,1)-1)
         for jj=ii+1:size(R,1)

@@ -1,6 +1,7 @@
-function [g6C] = g6_struct(X,Y)
+function [g6C] = g6_struct(X,Y,rad)
+psi6p = zeros(length(X),1);
 for ii=1:length(X)
-    psi6p(ii) = psi6([X(ii),Y(ii)],X,Y,35);
+    psi6p(ii) = psi6([X(ii),Y(ii)],X,Y,rad);
 end
 
 S = uniqPairIdx_precalc([X,Y],psi6p);

@@ -3,6 +3,6 @@ function [neighbours,locations] = findNN(pos,X,Y,radius)
 % positions X,Y within radius.
 
     r = sqrt(bsxfun(@minus,pos(1),X).^2 +  bsxfun(@minus,pos(2),Y).^2);
-    locations = find(r < 32 & r~=0);
+    locations = find(r < radius & r~=0);
     neighbours = [X(locations) Y(locations)];
 end
