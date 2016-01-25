@@ -4,9 +4,14 @@ g6t1 = [];
 bins=[];
 radius = 25;
 vorts0 = vorts(1:(size(vorts,1) - nnz(isnan(vorts(:,2,1)))), 2:(size(vorts,2)-1), :);
+
+for ii=1:196
+   vorts1(:,ii,:) = vorts0(1:300,ii,:); 
+end
+
 parfor ii=1:(size(vorts0,2)-1)
     ii
-   [g6t1(ii,:),bins(ii,:)] = binData(g6_struct(vorts0(:,ii,1),vorts0(:,ii,2),radius),500,500);
+   [g6t1(ii,:),bins(ii,:)] = binData(g6_struct(vorts1(:,ii,1),vorts1(:,ii,2),radius),500,500);
 end
 %%
 % bins = linspace(0,max(g6C(1,:)),400);
@@ -21,7 +26,7 @@ figure;
 set(gca,'FontName','Latin Modern Roman','FontSize',22);
 set(gca,'TickLabelInterpreter', 'latex');
 %imagesc(bins(1,:),linspace(0,2,198),g6t1); 
-contourf(linspace(0,500*dx,499),linspace(0.002,1.96,196),g6t1,80,'LineWidth',0);
+contourf(linspace(0,size(g6t1,2)*dx,size(g6t1,2)),linspace(0.002,1.96,size(g6t1,1)),(g6t1),80,'LineWidth',0);
 shading interp; set(gca,'YDir','normal');axis square;
 caxis([0 1]); colorbar; %colormap ('default')
 set(gca,'FontName','Latin Modern Roman','FontSize',22);
