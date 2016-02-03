@@ -3,11 +3,13 @@ function [r,a0_k,theta,theta_k,K] = findK(X,Y,dx,r_rad)
     theta = zeros(length(X),1);
     for ii=1:length(X)
         [nn,idx] = findNN([X(ii) Y(ii)],X, Y, r_rad);
-        r(ii) = sum( sqrt((nn(:,1) - X(ii)).^2 +(nn(:,2) - Y(ii)).^2 ) )/length(nn);
-        for jj=1:size(nn,1)
-            theta(ii) = theta(ii) + mod( getAngle( [X(ii),Y(ii)], [X(idx(jj)),Y(idx(jj))]),2*pi);
+        if size(nn,1)>1
+            r(ii) = sum( sqrt((nn(:,1) - X(ii)).^2 +(nn(:,2) - Y(ii)).^2 ) )./length(nn);
+            for jj=1:size(nn,1)
+                theta(ii) = theta(ii) + mod( getAngle( [X(ii),Y(ii)], [X(idx(jj)),Y(idx(jj))]),2*pi);
+            end
+            theta(ii) = theta(ii)./size(nn,1);
         end
-        theta(ii) = theta(ii)./length(nn);
     end
     r = mean(r);%sum(r)./length(r);
     theta = median(mod(theta,2*pi));

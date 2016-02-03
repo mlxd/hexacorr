@@ -1,39 +1,27 @@
 loadVtx;
-vorts=[];
+dx=6.821230e-07;
+nnRadius = 35;
+VTX0 = csvread('vort_arr_0',1,0);
 
-PsiK = zeros(size(vorts)-nnz(isnan(vorts(:,1,1))),1);
-PsiK=[];
-for ii=1:1
-    for jj=1:6
-        %PsiK(ii,jj,:) = psik(K(jj,:),squeeze(vorts(1:300,ii+1,:)))';
-        PsiK(ii,jj,:) = psik(K(jj,:),vorts)';
-    end
-end
+    %Find K for perfect lattice at angle only. Do not use t=0 data
+    [r0,a0_k,thetar,thetak,K] = findK( VTX0(:,2), VTX0(:,4), dx, nnRadius);
+gkb = []%zeros(size(vorts,2),799);
+GK = []%zeros(size(vorts,2),799);
+r =[]
+bins = zeros(800,1);
+parfor t=2:size(vorts,2)
+    t
+    %Get positions
+    R = squeeze(vorts(1:size(vorts,1)-sum(vorts(:,t,1)==0),t,:));
+    
+    %Calculate PsiKs
+    %K = K.*(0.95 + 0.05*rand(size(K,1),size(K,2)));
+    PsiK = exp(1i.*psik(K,R));
 
-count = 0;
-kIdx = 1;
-time = 1;
-uPair = [];
-gk=[]
-gkb=zeros(6,999);
-bin=[];
-for kIdx = 1:6
-count = 0;
-for ii=1:(size(PsiK,3)-1)
-    for jj=(ii+1):size(PsiK,3)
-        count = count +1;
-        uPair(count).pk0 = PsiK(time,kIdx,ii);
-        uPair(count).pk1 = PsiK(time,kIdx,jj);
-        uPair(count).rabs = sqrt(    sum(  (vorts(ii,time,:) - vorts(jj,time,:)).^2 ) );
-        uPair(count).pk01 = PsiK(time,kIdx,ii) * conj(PsiK(time,kIdx,jj));
-    end
-end
+    %Calculate unique pairs
+    psiPsi = uniqPairIdx(PsiK,R,dx);
 
-[~,order] = sort([uPair(:).rabs],'ascend');
-uPairS(kIdx,:) = uPair(order);
-
-gk(kIdx,:,:) = cell2mat(squeeze(struct2cell(uPairS(kIdx,:))));
-
-[gkb(kIdx,:),~]=binData(squeeze(gk(kIdx,:,:)),55,1000)
-
+    %Calculate GK
+    [GK,r] = sortCorr(psiPsi);
+    [gkb(:,t),bins]=binIt(GK,r,10*r0,800);
 end
